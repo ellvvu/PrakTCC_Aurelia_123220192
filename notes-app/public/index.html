@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgb(236, 80, 163), rgb(254, 202, 230)); /* Pink gradient background */
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff; /* White text for better contrast */
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Styles */
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        .form-container input,
+        .form-container textarea {
+            width: 780px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+        }
+
+        .form-container textarea {
+            resize: vertical;
+            height: 100px;
+            width: 780px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: rgb(236, 80, 163); /* Coral pink button */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: rgb(236, 80, 163); /* Darker coral pink on hover */
+        }
+
+        .container h2{
+            color:rgb(236, 80, 163);
+            text-align: center;
+        }
+
+        /* Notes List Styles */
+        #notesList {
+            margin-top: 20px;
+        }
+
+        .note {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .note:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .note h3 {
+            margin: 0 0 10px;
+            color: rgb(236, 80, 163); /* Coral pink for note titles */
+        }
+
+        .note p {
+            margin: 0 0 15px;
+            color: #555;
+        }
+
+        .note button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .note button.edit {
+            background-color: rgb(228, 156, 194); /* Light pink for edit button */
+            color: white;
+        }
+
+        .note button.edit:hover {
+            background-color: rgb(236, 80, 163); /* Darker light pink on hover */
+        }
+
+        .note button.delete {
+            background-color: #ff6f61; /* Coral pink for delete button */
+            color: white;
+        }
+
+        .note button.delete:hover {
+            background-color: #ff4a3d; /* Darker coral pink on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Notes App</h1>
+    <div class="container">
+        <!-- Form to Add Notes -->
+        <div class="form-container">
+            <input type="text" id="noteTitle" placeholder="Title">
+            <textarea id="noteContent" placeholder="Content"></textarea>
+            <button onclick="addNote()">Add Note</button>
+        </div>
+
+        <h2>My Notes</h2>
+        <!-- Notes List -->
+        <div id="notesList"></div>
+    </div>
+
+    <script>
+        // Function to fetch and display notes
+        async function fetchNotes() {
+            const response = await fetch('http://localhost:3000/notes');
+            const notes = await response.json();
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = '';
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note';
+                noteElement.innerHTML = `
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <button class="edit" onclick="editNote(${note.id})">Edit</button>
+                    <button class="delete" onclick="deleteNote(${note.id})">Delete</button>
+                `;
+                notesList.appendChild(noteElement);
+            });
+        }
+
+        // Function to add a new note
+        async function addNote() {
+            const title = document.getElementById('noteTitle').value;
+            const content = document.getElementById('noteContent').value;
+            if (!title || !content) {
+                alert('Please fill in both title and content.');
+                return;
+            }
+            const response = await fetch('http://localhost:3000/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, content })
+            });
+            if (response.ok) {
+                fetchNotes();
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+            }
+        }
+
+        // Function to edit a note
+        async function editNote(id) {
+            const title = prompt('Enter new title:');
+            const content = prompt('Enter new content:');
+            if (title && content) {
+                const response = await fetch(`http://localhost:3000/notes/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+                if (response.ok) {
+                    fetchNotes();
+                }
+            }
+        }
+
+        // Function to delete a note
+        async function deleteNote(id) {
+            const confirmDelete = confirm('Are you sure you want to delete this note?');
+            if (confirmDelete) {
+                const response = await fetch(`http://localhost:3000/notes/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    fetchNotes();
+                }
+            }
+        }
+
+        // Fetch notes when the page loads
+        fetchNotes();
+    </script>
+</body>
+</html>
