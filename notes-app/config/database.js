@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 
 // Create a connection pool
 const pool = mysql.createPool({
-    host: 'localhost', // MySQL server host
+    host: '104.198.189.185', // MySQL server host
     user: 'root',      // MySQL username
     password: '',      // MySQL password
     database: 'notes_app', // Database name

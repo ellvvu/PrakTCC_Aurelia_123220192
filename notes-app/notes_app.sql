@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 04:59 PM
+-- Generation Time: Mar 06, 2025 at 06:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -18,40 +18,38 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `tcc`
+-- Database: `notes_app`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `notes`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE `notes` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `gender` varchar(255) DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
+  `title` varchar(255) NOT NULL,
+  `content` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `notes`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `gender`, `createdAt`, `updatedAt`) VALUES
-(1, 'mlm', 'muhluhmuh', 'he/him', '2025-02-20 08:44:31', '2025-02-27 06:42:36'),
-(2, 'walawe', 'wuhluhwuh', 'she/her', '2025-02-20 07:59:13', '2025-02-20 07:59:13');
+INSERT INTO `notes` (`id`, `title`, `content`) VALUES
+(2, 'jadwal kuliah', 'senin: metopel, tpm\nselasa: tcc, digital forensik'),
+(4, 'tobi tobi tob', 'semangat puasanya'),
+(5, 'Hukum Internasional', 'Pembicaraan mengenai subjek hukum lebih menekankan persona sebagai subjek hukum.');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `users`
+-- Indexes for table `notes`
 --
-ALTER TABLE `users`
+ALTER TABLE `notes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -59,10 +57,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT for table `notes`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `notes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
